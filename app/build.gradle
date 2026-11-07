@@ -1,0 +1,96 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+}
+
+// Last.fm credentials are kept out of source control. Register a free API account at
+// https://www.last.fm/api/account/create and add these two lines to your local.properties
+// (which is already gitignored and never committed):
+//   lastfm.api.key=YOUR_KEY
+//   lastfm.api.secret=YOUR_SECRET
+def localProps = new Properties()
+def localPropsFile = rootProject.file("local.properties")
+if (localPropsFile.exists()) {
+    localProps.load(new FileInputStream(localPropsFile))
+}
+def lastFmApiKey = localProps.getProperty("lastfm.api.key", "")
+def lastFmApiSecret = localProps.getProperty("lastfm.api.secret", "")
+
+def todayDate = new java.text.SimpleDateFormat("yyyyMMdd").format(new Date())
+def defaultVersionCode = todayDate.toInteger()
+def defaultVersionName = todayDate
+
+def appVersionCode = project.hasProperty('appVersionCode') ? project.property('appVersionCode').toInteger() : defaultVersionCode
+def appVersionName = project.hasProperty('appVersionName') ? project.property('appVersionName') : defaultVersionName
+
+android {
+    namespace 'com.themoon.y1'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.themoon.y1"
+        minSdk 19
+        targetSdk 35
+        versionCode appVersionCode
+        versionName appVersionName
+        // Restrict APK packaging to 32-bit ARM (Cortex-A7) native libraries.
+        ndk {
+            abiFilters 'armeabi-v7a'
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        buildConfigField "String", "LASTFM_API_KEY", "\"${lastFmApiKey}\""
+        buildConfigField "String", "LASTFM_API_SECRET", "\"${lastFmApiSecret}\""
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    signingConfigs {
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release.storeFile != null ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    testImplementation libs.junit
+    testImplementation 'org.json:json:20231013'
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+    implementation libs.palette
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.13.3'
+    implementation files('libs/extension-opus-release.aar')
+    implementation files('libs/extension-flac-release.aar')
+    implementation files('libs/extension-ffmpeg-release.aar')
+    implementation 'com.squareup.okhttp3:okhttp:3.12.13'
+    implementation 'org.conscrypt:conscrypt-android:2.5.2'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    // KitKat MediaCodec has a pre-API 21 frame timing drift bug in ExoPlayer;
+    // LibVLC is used exclusively for video playback while ExoPlayer handles audio.
+    implementation 'org.videolan.android:libvlc-all:3.3.14'
+}
+
+// Disable CheckAarMetadataTask to allow building against older SDK targets without metadata rejections.
+tasks.withType(com.android.build.gradle.internal.tasks.CheckAarMetadataTask).configureEach {
+    enabled = false
+}
