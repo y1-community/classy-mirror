@@ -429,6 +429,11 @@ class MainActivity : Activity(), InputRouter.VolumeAdjuster {
                         }
                     }
                 }
+
+                // In place of the MediaTek "SD card ready" dialog, which SystemBloatManager turns off
+                override fun onSecondaryStorageInserted() {
+                    Notice.show(this@MainActivity, t("SD card ready"))
+                }
             })
             start()
         }
@@ -446,6 +451,7 @@ class MainActivity : Activity(), InputRouter.VolumeAdjuster {
         // A long press of the Power button shows our Power screen, not Android's power menu
         powerMenuInterceptor = PowerMenuInterceptor(this) { showPowerMenu() }.also { it.register() }
         com.themoon.y1.managers.CellRadioManager.start(this)
+        com.themoon.y1.managers.SystemBloatManager.start(this)
 
         try {
             val initBattery = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
