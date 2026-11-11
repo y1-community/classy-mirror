@@ -19,7 +19,7 @@
     "exclude_tags": []
   },
   "defaults": {
-    "software_name": "Classy (formerly Inniclassic for Y2)",
+    "software_name": "Classy",
     "target_model": "Y2",
     "target_type": "Stock",
     "description": ""
