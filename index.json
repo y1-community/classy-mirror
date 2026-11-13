@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-11-13T06:02:20Z",
+  "generated_at": "2026-11-13T23:02:32Z",
   "source_repo": "ClassyPlayer/Classy",
   "source_fallback_repo": "",
   "mirror_repo": "y1-community/classy-mirror",
@@ -67,6 +67,225 @@
     }
   ],
   "releases": [
+    {
+      "tag": "20261113-beta",
+      "title": "Portable Flashing Package: Classy 20261113 (beta)",
+      "source_title": "Classy 20261113 (beta)",
+      "source_url": "https://github.com/ClassyPlayer/Classy/releases/tag/20261113-beta",
+      "source_fallback_url": "",
+      "published_at": "2026-11-13T22:31:30Z",
+      "prerelease": true,
+      "source_notes": "> [!WARNING]\n> **This is a beta.** It may have bugs that are not in the stable release. Players get it in **Settings \u2192 General \u2192 System Update \u2192 Update Channel \u2192 Beta**.\n\n### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261113-beta.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* feat(playlists): show playlist songs with their cover, title and artist by @andsuor in https://github.com/ClassyPlayer/Classy/pull/84\n* fix(podcasts): play or open the chosen episode, not the last Music list by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/89\n* fix(library): skip hidden files and folders in the library scan, such as the macOS ._ files by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/90\n* fix(video): keep the screen on during a video, and fix the length and the diamond of the scrub bar by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/91\n* fix(player): make Repeat All play the whole list, not only the current song by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/88\n* feat(library): list each artist of a multi-artist tag on its own by @andsuor in https://github.com/ClassyPlayer/Classy/pull/85\n* docs(install): keep the file name of the release ROM and clear the Updater CE cache for a local install by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/92\n* feat(audio): add Settings \u2192 Playback \u2192 Mono Audio, which mixes left and right on both channels for one earbud by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/93\n* feat(playlists): show each song's length at the right of a playlist row by @andsuor in https://github.com/ClassyPlayer/Classy/pull/86\n* feat(playlists): keep playlists in Playlists on the microSD card so they can be copied from a computer by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/97\n* fix(podcasts): list the downloaded episodes of a channel when its feed does not load by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/96\n* fix(quiz): use FLAC songs in Music Quiz, and do not ask again a song whose clip does not play by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/95\n* feat(update): add a beta update channel by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/100\n\n## New Contributors\n* @andsuor made their first contribution in https://github.com/ClassyPlayer/Classy/pull/84\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261112...20261113-beta\n",
+      "assets": [
+        {
+          "name": "rom_y1_type_a-windows.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "windows",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 758321547,
+          "sha256": "bb7382d6c773ea425b20d8c998212868a1e7f109962e0e6b62b146c9c515fcae",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-windows.zip"
+        },
+        {
+          "name": "rom_y1_type_a-windows-legacy.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "windows-legacy",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 520082764,
+          "sha256": "5d31fc499588557094094f36db9e90bdd714291076c63878041508e23c4a2c88",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_a-linux.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "linux",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 805642871,
+          "sha256": "1b688e930bd017846c8f4cb7ffd23ab1b311d2aff1b4217af32cb332fe564686",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-linux.zip"
+        },
+        {
+          "name": "rom_y1_type_a-linux-arm64.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "linux-arm64",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 630547105,
+          "sha256": "a27aa04635e868fada5aa36104f326dfe28670446104bc4ebd22783fb4ec55c4",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y1_type_a-linux-legacy.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "linux-legacy",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 518497045,
+          "sha256": "f46d7dfb29f6a561af15a3a9b552114e0ababd4d689493246f933128bbef58e2",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_a-macos.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "macos",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 564955521,
+          "sha256": "d245318d2c98a8ff5c8cb0e28672352aab8341988d31c0b1f3f58880099efeaa",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_a-macos.zip"
+        },
+        {
+          "name": "rom_y1_type_b-windows.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "windows",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 750712553,
+          "sha256": "d1ac9cc1e37c88496115a9878dba52ccc859fe86c8313906246ece854cf4c4e6",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-windows.zip"
+        },
+        {
+          "name": "rom_y1_type_b-windows-legacy.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "windows-legacy",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 512473770,
+          "sha256": "97bf9412aee6dca1210438dd9a7abba31bb9fa36477d0416f777b04521d8f27a",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_b-linux.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "linux",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 798033877,
+          "sha256": "827e5331b6a9eb02769e661f77c081345189d478275bdc7b077f86a00cb2117d",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-linux.zip"
+        },
+        {
+          "name": "rom_y1_type_b-linux-arm64.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "linux-arm64",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 622938111,
+          "sha256": "3372394f1f116e82ba33f1756ae63bcb188284bdd51709da3fe3af38208782e9",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y1_type_b-linux-legacy.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "linux-legacy",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 510888051,
+          "sha256": "9af3f8917b5067d3c8adfa5a46585122607888dcac4bc2106c5be4bbfb9303a4",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_b-macos.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "macos",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 557346528,
+          "sha256": "2912e73d4953c4fa3890f847f00f75d13a00bb6242a6103cd2cceb16ea338361",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y1_type_b-macos.zip"
+        },
+        {
+          "name": "rom_y2-windows.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "windows",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 721783296,
+          "sha256": "8078fa650b760645c974168e7628704e4b3b3eff004518e67807a2e0c556e83d",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y2-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y2-windows.zip"
+        },
+        {
+          "name": "rom_y2-windows-legacy.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "windows-legacy",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 483544491,
+          "sha256": "29c24f2bdb03adbf05a285ee979c2fc0f1163605fc0e706af7b6eec598429773",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y2-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y2-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y2-linux.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 778612900,
+          "sha256": "8ad2e14108bc2c0464932182aafc648d4d591328c47468fcb213097f146e16d4",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y2-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y2-linux.zip"
+        },
+        {
+          "name": "rom_y2-linux-arm64.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux-arm64",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 603517134,
+          "sha256": "6868f7c033b37e000ddaf02a41ee5468187f43702718e8b707ecedac56fbb57b",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y2-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y2-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y2-linux-legacy.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux-legacy",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 481958772,
+          "sha256": "aec3ea5fb8a07676301e6161695f8e2d69de16c77d56414989b24b5aa0de1a34",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y2-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y2-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y2-macos.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "macos",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 530220903,
+          "sha256": "7e0b337e8dd728eab67ceb7a8f24eb0f0bfb0f377e50c0004b4897bbdd95c8be",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/rom_y2-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261113-beta/rom_y2-macos.zip"
+        }
+      ],
+      "original_assets": [
+        "Classy-20261113-beta.apk",
+        "rom_y1_type_a.zip",
+        "rom_y1_type_b.zip",
+        "rom_y2.zip",
+        "SHA256SUMS.txt",
+        "update.json"
+      ],
+      "stats_url": "https://github.com/y1-community/classy-mirror/releases/download/20261113-beta/stats.txt"
+    },
     {
       "tag": "y1-exp.2",
       "title": "Portable Flashing Package: Y1 experimental 2 (20261112-exp.2-y1)",
@@ -228,7 +447,7 @@
       "source_fallback_url": "",
       "published_at": "2026-11-12T10:29:09Z",
       "prerelease": false,
-      "source_notes": "### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261112.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** (`rom.zip`) | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** (`rom_type_b.zip`) | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* fix(update): verify the whole signature of the update before System Update changes anything by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/81\n* Feat: iPod games emulation by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/80\n\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261111...20261112",
+      "source_notes": "- A new Games section runs iPod click wheel games through emulation. You need decrypted game files, which can be found on the Internet Archive. Games pause when you leave the app or stay idle. Expect some visual bugs, and the wheel resolution is lower than on an iPod.\n- System Update now verifies every file of the downloaded update and its signature before it touches the system. If the check fails, the download is deleted and the player says so.\n\n#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261112.apk` | All devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| `update.json` | All devices | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `rom_y1_type_a.zip` (`rom.zip`) | Innioasis Y1 (Type A) | Flashable ROM for Y1 players with original firmware 2.0.0 or higher |\n| `rom_y1_type_b.zip` (`rom_type_b.zip`) | Innioasis Y1 (Type B) | Flashable ROM for Y1 players with original firmware below 2.0.0 |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nFull changelog: https://github.com/ClassyPlayer/Classy/compare/20261111...20261112\n",
       "assets": [
         {
           "name": "rom-windows.zip",
@@ -735,7 +954,7 @@
       "source_fallback_url": "",
       "published_at": "2026-11-11T08:47:21Z",
       "prerelease": false,
-      "source_notes": "### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261111.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** (`rom.zip`) | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** (`rom_type_b.zip`) | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* fix(update): make System Update safe when the key differs, and sign releases with one key by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/79\n\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261110...20261111",
+      "source_notes": "- System Update no longer leaves the player stuck on the start screen. It checks the signing key before changing anything, and if the update cannot replace the installed app, it explains how to update with Innioasis Updater CE instead.\n- Releases are now signed with one fixed key, so future in-app updates install normally. Updating from 20261110 or older may need Innioasis Updater CE once.\n- The new boot screen now actually applies after an update on the Y2.\n\n#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261111.apk` | All devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| `update.json` | All devices | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `rom_y1_type_a.zip` (`rom.zip`) | Innioasis Y1 (Type A) | Flashable ROM for Y1 players with original firmware 2.0.0 or higher |\n| `rom_y1_type_b.zip` (`rom_type_b.zip`) | Innioasis Y1 (Type B) | Flashable ROM for Y1 players with original firmware below 2.0.0 |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nFull changelog: https://github.com/ClassyPlayer/Classy/compare/20261110...20261111\n",
       "assets": [
         {
           "name": "rom-windows.zip",
@@ -1089,7 +1308,7 @@
       "source_fallback_url": "",
       "published_at": "2026-11-10T15:42:56Z",
       "prerelease": false,
-      "source_notes": "### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261110.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** (`rom.zip`) | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** (`rom_type_b.zip`) | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* feat(video): hide the overlay while the video plays, and open scrub mode with the centre button by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/69\n* Feat/boot progress screen by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/73\n* feat(system): strip unused Android bloat, daemons, and SystemUI on Y2 by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/49\n* fix(storage): replace the MediaTek \"SD card ready\" dialog with a themed notice by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/75\n* fix(battery): show all level bars of Last 24 Hours on the Y2 by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/77\n* fix(system): remove the keyboard as input method before it is disabled on the Y2 by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/78\n\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261107...20261110",
+      "source_notes": "- The Y2 now shows a custom boot screen with a progress bar. It is applied on update and through a migration, so existing players get it too.\n- On the Y2, Classy turns off parts of Android it does not use: the status bar, the lockscreen, the keyboard, window animations, and MediaTek daemons for logs, analog TV, OTA, A-GPS and device management.\n- A themed notice replaces MediaTek's \"SD card ready\" dialog.\n- Last 24 Hours in Settings \u2192 Battery shows all of its level bars on the Y2.\n\n#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261110.apk` | All devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| `update.json` | All devices | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `rom_y1_type_a.zip` (`rom.zip`) | Innioasis Y1 (Type A) | Flashable ROM for Y1 players with original firmware 2.0.0 or higher |\n| `rom_y1_type_b.zip` (`rom_type_b.zip`) | Innioasis Y1 (Type B) | Flashable ROM for Y1 players with original firmware below 2.0.0 |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nFull changelog: https://github.com/ClassyPlayer/Classy/compare/20261107-v2...20261110\n",
       "assets": [
         {
           "name": "rom-windows.zip",
@@ -1443,7 +1662,7 @@
       "source_fallback_url": "",
       "published_at": "2026-11-07T13:57:11Z",
       "prerelease": false,
-      "source_notes": "### Classy Release\r\n\r\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\r\n\r\n#### \ud83d\udce6 Release Assets\r\n\r\n| File | Target Device | Notes |\r\n| :--- | :--- | :--- |\r\n| **`Classy-20261107-v2.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\r\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\r\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\r\n| **`rom_y1_type_a.zip`** (`rom.zip`) | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\r\n| **`rom_y1_type_b.zip`** (`rom_type_b.zip`) | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\r\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\r\n\r\n#### \u26a1 Flashing Instructions (SP Flash Tool)\r\n1. Extract the corresponding zip file for your device.\r\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\r\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\r\n4. Select **Firmware Upgrade** or **Download Only**.\r\n5. Power off the device completely, click **Download**, and connect the USB cable.\r\n\r\n---\r\n\r\n\r\n## What's Changed\r\n* feat(video): hide the overlay while the video plays, and open scrub mode with the centre button by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/69\r\n\r\n\r\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261107...20261107-v2",
+      "source_notes": "- The video overlay now hides while a video plays, and the centre button opens scrub mode.\n\n#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261107-v2.apk` | All devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| `update.json` | All devices | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `rom_y1_type_a.zip` (`rom.zip`) | Innioasis Y1 (Type A) | Flashable ROM for Y1 players with original firmware 2.0.0 or higher |\n| `rom_y1_type_b.zip` (`rom_type_b.zip`) | Innioasis Y1 (Type B) | Flashable ROM for Y1 players with original firmware below 2.0.0 |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nFull changelog: https://github.com/ClassyPlayer/Classy/compare/20261107...20261107-v2\n",
       "assets": [
         {
           "name": "rom-windows.zip",
@@ -1797,7 +2016,7 @@
       "source_fallback_url": "",
       "published_at": "2026-11-07T09:43:54Z",
       "prerelease": false,
-      "source_notes": "### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261107.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** (`rom.zip`) | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** (`rom_type_b.zip`) | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* refactor(settings): remove Settings \u2192 Appearance \u2192 Background and the hidden blurred background views by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/61\n* fix(rom): install the launcher's native libraries in /system/lib, so that videos play by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/62\n* docs: add Play On, romanised lyrics and Settings \u2192 Battery to the site and README by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/60\n* fix(usb): share the microSD card at once or say why not, keep the app alive, and add the USB Drive setting by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/64\n* fix(ui): hide Android's notification icons and tickers while the app is in front by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/65\n* fix(library): remove \"Do not turn off the screen.\" from the scan progress text by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/66\n\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261106...20261107",
+      "source_notes": "- USB Drive mode was reworked. The player checks for a microSD card before sharing it (instead of waiting about 30 seconds), and Android no longer kills the app while the card is shared. A new Settings \u2192 Connectivity \u2192 USB Drive option lets you pick Ask, Always or Never when a cable is plugged in, and the music resumes after Eject only if it was playing before.\n- Videos play again on ROM installs, because the launcher's native libraries are now installed in `/system/lib`.\n- Android's notification icons and tickers no longer appear on top of the app.\n- The library scan progress text no longer says \"Do not turn off the screen.\"\n- Settings \u2192 Appearance \u2192 Background was removed, together with the hidden blurred background views behind it.\n\n#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261107.apk` | All devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| `update.json` | All devices | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `rom_y1_type_a.zip` (`rom.zip`) | Innioasis Y1 (Type A) | Flashable ROM for Y1 players with original firmware 2.0.0 or higher |\n| `rom_y1_type_b.zip` (`rom_type_b.zip`) | Innioasis Y1 (Type B) | Flashable ROM for Y1 players with original firmware below 2.0.0 |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nFull changelog: https://github.com/ClassyPlayer/Classy/compare/20261106...20261107\n",
       "assets": [
         {
           "name": "rom-windows.zip",
@@ -2151,7 +2370,7 @@
       "source_fallback_url": "",
       "published_at": "2026-11-06T15:58:50Z",
       "prerelease": false,
-      "source_notes": "### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261106.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** (`rom.zip`) | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** (`rom_type_b.zip`) | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* refactor(lists): one model for the list screens and the Settings rows by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/45\n* fix(settings): end the menu reorder before new rows replace the Main Menu Items rows by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/48\n* fix(library): keep the CPU awake while the media library scan runs by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/53\n* docs(site): add a product page and a GitHub Pages workflow by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/52\n* feat(settings): add Settings \u2192 Battery, with the battery level and the screen time of the last 24 hours or 10 days by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/55\n* feat(cast): Play On: play the music on a Sonos, DLNA or Google Cast speaker of the Wi-Fi by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/56\n* docs(site): install the firmware with Innioasis Updater CE from innioasis.app by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/57\n* feat(player): show romanised lyrics (pinyin, romaji), or both lines, from a .romanised.lrc file by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/54\n* Rebrand project from InniClassic to Classy by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/46\n* fix(scripts): find the repo root without assuming the directory name by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/58\n* feat(boot-logo): generate and package Classy boot logo by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/47\n* fix: point repository links at ClassyPlayer/Classy by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/59\n\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261105...20261106",
+      "source_notes": "- InniClassic is now Classy. The app name, repository links and the new Classy boot logo all use the new name, and settings backups made with older versions still restore.\n- Play On sends the music to a Sonos, DLNA or Google Cast speaker on the same Wi-Fi.\n- A new Settings \u2192 Battery screen shows the battery level and the screen time for the last 24 hours or 10 days.\n- Lyrics can show romanised text (pinyin, romaji), or both lines, from a `.romanised.lrc` file.\n- The in-app update check now reads `update.json` from the latest GitHub release. Before, it looked for a file that did not exist.\n- The CPU stays awake while the media library scan runs, and reordering Main Menu Items no longer breaks when the rows refresh.\n\n#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261106.apk` | All devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| `update.json` | All devices | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `rom_y1_type_a.zip` (`rom.zip`) | Innioasis Y1 (Type A) | Flashable ROM for Y1 players with original firmware 2.0.0 or higher |\n| `rom_y1_type_b.zip` (`rom_type_b.zip`) | Innioasis Y1 (Type B) | Flashable ROM for Y1 players with original firmware below 2.0.0 |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nFull changelog: https://github.com/ClassyPlayer/Classy/compare/20261105...20261106\n",
       "assets": [
         {
           "name": "rom-windows.zip",
