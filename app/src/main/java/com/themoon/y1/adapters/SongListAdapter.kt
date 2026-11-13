@@ -9,12 +9,16 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.themoon.y1.MainActivity
+import com.themoon.y1.R
 import com.themoon.y1.StoragePaths
 import com.themoon.y1.ThemeManager
 import com.themoon.y1.core.TimeFormat
 import com.themoon.y1.lists.ArtRow
 import com.themoon.y1.lists.RowTexts
+import com.themoon.y1.managers.AlbumCoverManager
 import com.themoon.y1.managers.AudioPlayerManager
+import com.themoon.y1.managers.MediaLibraryManager
+import com.themoon.y1.models.ArtistNames
 import com.themoon.y1.models.SongItem
 import com.themoon.y1.podcasts.PodcastDownloadManager
 import com.themoon.y1.views.ClassicMenuStyle
@@ -26,10 +30,14 @@ import java.util.Collections
 import java.util.Date
 
 class SongListAdapter(
-    private val items: List<SongItem>
+    private val items: List<SongItem>,
+    /** Playlist rows: the cover, the title over the artist, and the track length at the right. */
+    private val artRows: Boolean = false,
+    /** The rows are the episodes of a podcast channel (Podcasts), not songs of the library. */
+    private val isPodcast: Boolean = false
 ) : BaseAdapter(), RowTexts {
 
-    private val showShuffleRow: Boolean = determineShuffleRow(items)
+    private val showShuffleRow: Boolean = !isPodcast && determineShuffleRow(items)
 
     fun hasShuffleRow(): Boolean = showShuffleRow
 
@@ -65,12 +73,13 @@ class SongListAdapter(
         val song = items[songPosition]
 
         val main = MainActivity.instance
+        if (artRows && main != null) return getArtRowView(main, convertView, song, position, songPosition)
         var iconCode = if (main != null && main.isAudiobookLibraryMode) "\uE310" else "\uE405"
         var displayTitle = song.title
         var customColor = 0
 
         if (main != null) {
-            if (main.currentBrowserMode == 14) {
+            if (isPodcast) {
                 val audioUrl = song.genre
                 val channelName = song.artist
                 val pubDate = song.year
@@ -168,7 +177,7 @@ class SongListAdapter(
             }
         }
 
-        if (main != null && main.currentBrowserMode == 14) {
+        if (main != null && isPodcast) {
             val safeChannel = song.artist.replace("[\\\\/:*?\"<>|]".toRegex(), "_")
             val safeTitle = song.title.replace("[\\\\/:*?\"<>|]".toRegex(), "_") + ".mp3"
             val localFile = File(StoragePaths.getPodcastChannelDir(safeChannel), safeTitle)
@@ -197,7 +206,7 @@ class SongListAdapter(
             main.virtualListSelectedIndex = position
             main.clickFeedback()
 
-            if (main.currentBrowserMode == 14) {
+            if (isPodcast) {
                 val audioUrl = song.genre
                 val imageUrl = song.album
                 val channelName = song.artist
@@ -206,7 +215,9 @@ class SongListAdapter(
                 val safeTitle = song.title.replace("[\\\\/:*?\"<>|]".toRegex(), "_") + ".mp3"
                 val localFile = File(StoragePaths.getPodcastChannelDir(safeChannel), safeTitle)
 
-                if (localFile.exists() && localFile.length() > 0) {
+                // A file that still downloads is not complete: it is not played (the episode screen offers Stream)
+                val pdm = PodcastDownloadManager.getInstance()
+                if (localFile.exists() && localFile.length() > 0 && !pdm.isDownloading(audioUrl)) {
                     var savedPos = main.prefs.getInt("book_pos_" + localFile.absolutePath, 0)
                     if (savedPos == 0) {
                         val streamKey = "/PODCAST_STREAM/$safeChannel/$safeTitle"
@@ -219,7 +230,7 @@ class SongListAdapter(
                     for (ep in items) {
                         val epTitle = ep.title.replace("[\\\\/:*?\"<>|]".toRegex(), "_") + ".mp3"
                         val epFile = File(StoragePaths.getPodcastChannelDir(safeChannel), epTitle)
-                        if (epFile.exists() && epFile.length() > 0) {
+                        if (epFile.exists() && epFile.length() > 0 && !pdm.isDownloading(ep.genre)) {
                             playList.add(epFile)
                             if (epFile.absolutePath == localFile.absolutePath) {
                                 targetIdx = playList.size - 1
@@ -306,6 +317,48 @@ class SongListAdapter(
         return row
     }
 
+    private fun getArtRowView(main: MainActivity, convertView: View?, song: SongItem, position: Int, songPosition: Int): View {
+        val art = ArtRow.of(convertView, main)
+        val path = song.file.absolutePath
+        val artist = ArtistNames.display(song.artist).takeUnless { it.isBlank() || it.equals("Unknown Artist", ignoreCase = true) } ?: ""
+        // The scan keeps the length; a library cache from before it did is read from the file once
+        val length = if (song.durationMs > 0L) TimeFormat.format(song.durationMs) else durations[path]
+        art.bind(song.title, artist, length ?: "")
+        art.image.tag = path
+        if (length == null) loadDuration(path, art) else stopWaiting(art)
+
+        val covers = AlbumCoverManager.getInstance()
+        val cover = covers.getThumbnailDirect(AlbumCoverManager.getAlbumKey(song.file, song.album))
+        if (cover != null) {
+            art.image.setImageBitmap(cover)
+        } else {
+            art.image.setImageResource(R.drawable.default_album)
+            covers.loadCoverAsync(song, object : AlbumCoverManager.CoverCallback {
+                override fun onCoverLoaded(albumKey: String, cover: Bitmap?, reflection: Bitmap?) {
+                    if (cover != null && art.image.tag == path) art.image.setImageBitmap(cover)
+                }
+            })
+        }
+
+        art.view.setOnClickListener {
+            main.virtualListSelectedIndex = position
+            main.clickFeedback()
+            AudioPlayerManager.getInstance().playTrackList(main.virtualSongList, songPosition)
+            main.changeScreen(3)
+        }
+        art.view.setOnLongClickListener {
+            main.clickFeedback()
+            main.isLongPressConsumed = true
+            when (main.currentBrowserMode) {
+                5 -> main.showRemoveFromFavoritesDialog(song.file)
+                7 -> main.showRemoveFromPlaylistDialog(song.file)
+                else -> main.showAddToPlaylistDialog(song.file)
+            }
+            true
+        }
+        return art.view
+    }
+
     private fun applyDefaultFocusListener(btn: View, position: Int, title: String, customColor: Int) {
         val main = MainActivity.instance ?: return
         val normalColor = if (customColor != 0) customColor else ThemeManager.getTextColorPrimary()
@@ -358,6 +411,55 @@ class SongListAdapter(
         const val VIEW_TYPE_SONG: Int = 1
 
         private var shuffleTileBitmap: Bitmap? = null
+
+        // Lengths of songs whose cache entry has none, read when a row first shows (kept until Classy restarts)
+        private val durations = java.util.concurrent.ConcurrentHashMap<String, String>()
+        // The rows that wait for a length, with the path that each one shows. Weak keys: a row that goes away
+        // stays not here. Lock it for each use, also of [pendingPaths].
+        private val waitingRows = java.util.WeakHashMap<ArtRow, String>()
+        // The paths in the queue of [durationWorker]: one read for each path
+        private val pendingPaths = HashSet<String>()
+        private val durationWorker = java.util.concurrent.Executors.newSingleThreadExecutor { job ->
+            Thread({
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND)
+                job.run()
+            }, "y1-row-length")
+        }
+        private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+
+        private fun loadDuration(path: String, art: ArtRow) {
+            synchronized(waitingRows) {
+                waitingRows[art] = path
+                if (!pendingPaths.add(path)) return
+            }
+            durationWorker.execute { readDuration(path) }
+        }
+
+        /** [art] shows a song with a known length now: a read that ends later does not change it. */
+        private fun stopWaiting(art: ArtRow) {
+            synchronized(waitingRows) { waitingRows.remove(art) }
+        }
+
+        private fun readDuration(path: String) {
+            // No read when no row shows the path now (the list scrolled on or closed); a new row queues it again
+            val wanted = synchronized(waitingRows) {
+                waitingRows.containsValue(path).also { if (!it) pendingPaths.remove(path) }
+            }
+            if (!wanted) return
+            val ms = MediaLibraryManager.getInstance().readLengthMs(File(path))
+            val text = if (ms > 0L) TimeFormat.format(ms) else ""
+            durations[path] = text
+            // Not View.post: from a worker thread it is lost while the row is not attached (Android 4.4)
+            mainHandler.post {
+                val rows = synchronized(waitingRows) {
+                    pendingPaths.remove(path)
+                    val done = waitingRows.filterValues { it == path }.keys.toList()
+                    for (row in done) waitingRows.remove(row)
+                    done
+                }
+                for (row in rows) if (row.image.tag == path) row.setTrailing(text)
+            }
+        }
 
         private fun determineShuffleRow(items: List<SongItem>?): Boolean {
             if (items.isNullOrEmpty()) return false

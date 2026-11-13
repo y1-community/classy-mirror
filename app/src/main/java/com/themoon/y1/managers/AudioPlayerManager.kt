@@ -55,6 +55,8 @@ class AudioPlayerManager private constructor() {
     var exoPlayer: SimpleExoPlayer? = null
     val customEqProcessor: Y1EqAudioProcessor = Y1EqAudioProcessor()
     val crossfeedProcessor: Y1CrossfeedAudioProcessor = Y1CrossfeedAudioProcessor()
+    /** Settings → Playback → Mono Audio, for the ExoPlayer path ([AudioEffectManager.syncAudioEffects] sets it). */
+    val monoProcessor: MonoAudioProcessor = MonoAudioProcessor()
     var legacyPlayer: MediaPlayer? = null
     var isUsingLegacyPlayer: Boolean = false
     // The file that the legacy player has prepared, or null.
@@ -183,6 +185,8 @@ class AudioPlayerManager private constructor() {
 
                 procList.add(customEqProcessor)
                 procList.add(crossfeedProcessor)
+                // After the effects that can make the two channels different, so that the output is mono
+                procList.add(monoProcessor)
                 procList.add(immortalSonic)
 
                 val processors = procList.toTypedArray()
@@ -217,17 +221,16 @@ class AudioPlayerManager private constructor() {
             }
         }
 
+        // Set before the first track: the sink mixes the first buffers before STATE_READY applies the effects
+        monoProcessor.isEnabled = MainActivity.instance?.prefs?.let { Prefs.MONO_AUDIO.get(it) } ?: false
+
         renderersFactory.setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER)
 
         exoPlayer = SimpleExoPlayer.Builder(context.applicationContext, renderersFactory).build().apply {
             // Partial wake lock while it plays: music continues when Android turns the screen off.
             setWakeMode(C.WAKE_MODE_LOCAL)
             val initialRepeatMode = MainActivity.instance?.prefs?.let { Prefs.REPEAT_MODE.get(it) } ?: 0
-            repeatMode = when (initialRepeatMode) {
-                1 -> Player.REPEAT_MODE_ONE
-                2 -> Player.REPEAT_MODE_ALL
-                else -> Player.REPEAT_MODE_OFF
-            }
+            repeatMode = exoRepeatMode(initialRepeatMode, exoHoldsWholeQueue())
             addListener(object : Player.EventListener {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     isPlayingActive = playWhenReady && (playbackState == Player.STATE_READY || playbackState == Player.STATE_BUFFERING)
@@ -327,14 +330,14 @@ class AudioPlayerManager private constructor() {
 
     fun setRepeatMode(mode: Int) {
         if (exoPlayer != null && !isUsingLegacyPlayer) {
-            val exoRepeatMode = when (mode) {
-                1 -> Player.REPEAT_MODE_ONE
-                2 -> Player.REPEAT_MODE_ALL
-                else -> Player.REPEAT_MODE_OFF
-            }
-            exoPlayer?.repeatMode = exoRepeatMode
+            exoPlayer?.repeatMode = exoRepeatMode(mode, exoHoldsWholeQueue())
         }
     }
+
+    /** ExoPlayer holds the whole play queue: the gapless queue, or the one track of a podcast stream. */
+    private fun exoHoldsWholeQueue(): Boolean =
+        isGaplessQueueActive ||
+            MainActivity.instance?.currentPlaylist?.singleOrNull()?.absolutePath?.startsWith("/PODCAST_STREAM") == true
 
     fun getCurrentSpeed(): Float = currentSpeed
 
@@ -353,7 +356,8 @@ class AudioPlayerManager private constructor() {
                     }
                     LastFmScrobbler.getInstance(main).rearmCurrentTrack()
                 } else if (repeatMode == 2) {
-                    nextTrack()
+                    // A track that ended has its bookmark at its end: the next pass must start each track at 0.
+                    nextTrack(fromStart = true)
                 } else {
                     if (main.currentIndex < main.currentPlaylist.size - 1) {
                         nextTrack()
@@ -421,13 +425,13 @@ class AudioPlayerManager private constructor() {
             main.currentIndex = targetIndex
         }
 
+        isGaplessQueueActive = !isShuffle && shouldUseGaplessQueue(main.currentPlaylist)
         if (!isUsingLegacyPlayer && exoPlayer != null) {
             exoPlayer?.shuffleModeEnabled = isShuffle
             setRepeatMode(repeatPref)
         }
         main.isPausedByHand = false
 
-        isGaplessQueueActive = !isShuffle && shouldUseGaplessQueue(main.currentPlaylist)
         if (isGaplessQueueActive) {
             val mediaItems = ArrayList<MediaItem>()
             for (f in main.currentPlaylist) {
@@ -441,12 +445,7 @@ class AudioPlayerManager private constructor() {
                 exo.stop()
                 exo.setMediaItems(mediaItems, main.currentIndex, if (initialSeekMs > 0) initialSeekMs else 0L)
                 exo.shuffleModeEnabled = false
-                val exoRepeatMode = when (repeatPref) {
-                    1 -> Player.REPEAT_MODE_ONE
-                    2 -> Player.REPEAT_MODE_ALL
-                    else -> Player.REPEAT_MODE_OFF
-                }
-                exo.repeatMode = exoRepeatMode
+                exo.repeatMode = exoRepeatMode(repeatPref, gapless = true)
                 exo.setPlaybackParameters(PlaybackParameters(currentSpeed, 1.0f))
                 exo.prepare()
                 if (!main.isPausedByHand) exo.playWhenReady = true
@@ -503,6 +502,8 @@ class AudioPlayerManager private constructor() {
 
             exoPlayer?.setMediaSource(mediaSource)
             exoPlayer?.prepare()
+            // The stream is the whole queue: Repeat All repeats the stream.
+            exoPlayer?.repeatMode = exoRepeatMode(Prefs.REPEAT_MODE.get(main.prefs), gapless = true)
             applyMasterVolume()
 
             if (offsetMs > 0) {
@@ -657,7 +658,8 @@ class AudioPlayerManager private constructor() {
         main?.updatePlayerUI()
     }
 
-    fun nextTrack() {
+    /** [fromStart]: start the next track at 0, not at its audiobook or podcast bookmark. */
+    fun nextTrack(fromStart: Boolean = false) {
         saveAudiobookBookmarkIfNeeded()
         val main = MainActivity.instance ?: return
         if (main.currentPlaylist.isEmpty()) return
@@ -673,7 +675,7 @@ class AudioPlayerManager private constructor() {
         }
 
         main.currentIndex = (main.currentIndex + 1) % main.currentPlaylist.size
-        prepareMusicTrack(main.currentIndex)
+        prepareMusicTrack(main.currentIndex, fromStart = fromStart)
         main.updatePlayerUI()
     }
 
@@ -713,7 +715,7 @@ class AudioPlayerManager private constructor() {
         if (savePosition) savePlaybackPositionOnly(sync = true)
     }
 
-    fun prepareMusicTrack(index: Int, initialSeekMs: Long = 0L, initialDurationMs: Long = 0L) {
+    fun prepareMusicTrack(index: Int, initialSeekMs: Long = 0L, initialDurationMs: Long = 0L, fromStart: Boolean = false) {
         val main = MainActivity.instance ?: return
         if (main.currentPlaylist.isEmpty()) return
 
@@ -737,7 +739,7 @@ class AudioPlayerManager private constructor() {
                 main.consecutiveErrorCount = 0
             } else {
                 Notice.error(main, "Corrupted file detected. Skipping...")
-                Handler(Looper.getMainLooper()).postDelayed({ nextTrack() }, 1500)
+                Handler(Looper.getMainLooper()).postDelayed({ nextTrack(fromStart) }, 1500)
             }
             return
         }
@@ -752,9 +754,13 @@ class AudioPlayerManager private constructor() {
                 track.absolutePath.contains("/Podcasts", ignoreCase = true) ||
                 track.absolutePath.startsWith("/PODCAST_STREAM")
 
+        // A track that plays again from 0: its bookmark from the last play is old, so a retry must not use it.
+        if (fromStart && isAudiobookOrPodcast && initialSeekMs <= 0) {
+            main.prefs.edit().putInt("book_pos_" + track.absolutePath, 0).apply()
+        }
         val effectiveSeekMs = if (initialSeekMs > 0) {
             initialSeekMs
-        } else if (isAudiobookOrPodcast) {
+        } else if (isAudiobookOrPodcast && !fromStart) {
             main.prefs.getInt("book_pos_" + track.absolutePath, 0).toLong()
         } else {
             0L
@@ -987,6 +993,8 @@ class AudioPlayerManager private constructor() {
 
                 exoPlayer?.setMediaSource(mediaSource)
                 exoPlayer?.prepare()
+                // Only this track is in ExoPlayer: Repeat All goes to the next track in handleTrackCompletion.
+                exoPlayer?.repeatMode = exoRepeatMode(Prefs.REPEAT_MODE.get(main.prefs), gapless = false)
 
                 val isShuffle = Prefs.SHUFFLE.get(main.prefs)
                 exoPlayer?.shuffleModeEnabled = isShuffle
@@ -1031,7 +1039,7 @@ class AudioPlayerManager private constructor() {
                 main.updatePlayerUI()
                 main.consecutiveErrorCount = 0
             } else {
-                Handler(Looper.getMainLooper()).postDelayed({ nextTrack() }, 2000)
+                Handler(Looper.getMainLooper()).postDelayed({ nextTrack(fromStart) }, 2000)
             }
         }
     }
@@ -1418,15 +1426,20 @@ class AudioPlayerManager private constructor() {
     fun extractOpusMetadata(file: File): Array<Any?> = extractOpusMetadata(file, true)
 
     fun extractOpusMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(11)
+        val tags = arrayOfNulls<Any>(12)
         try {
             val fis = FileInputStream(file)
             val bos = ByteArrayOutputStream()
             val header = ByteArray(27)
             var totalRead = 0
 
+            var serial: Int? = null
             while (totalRead < 1500000 && fis.read(header) == 27) {
                 if (header[0] != 'O'.code.toByte() || header[1] != 'g'.code.toByte() || header[2] != 'g'.code.toByte() || header[3] != 'S'.code.toByte()) break
+                if (serial == null) {
+                    serial = (header[14].toInt() and 0xFF) or ((header[15].toInt() and 0xFF) shl 8) or
+                        ((header[16].toInt() and 0xFF) shl 16) or ((header[17].toInt() and 0xFF) shl 24)
+                }
 
                 val pageSegments = header[26].toInt() and 0xFF
                 val segmentTable = ByteArray(pageSegments)
@@ -1444,6 +1457,12 @@ class AudioPlayerManager private constructor() {
             fis.close()
 
             val buffer = bos.toByteArray()
+            // [11]: the length (ms), from the last page; Android 4.4 cannot give it for Opus
+            val preSkip = AudioLength.opusPreSkip(buffer, 0)
+            if (preSkip >= 0) {
+                val granule = AudioLength.lastGranule(file, serial)
+                if (granule >= 0) tags[11] = AudioLength.opusMs(granule, preSkip)
+            }
             val magic = "OpusTags".toByteArray(Charsets.UTF_8)
             var p = -1
             for (i in 0..(buffer.size - magic.size)) {
@@ -1551,15 +1570,20 @@ class AudioPlayerManager private constructor() {
     fun extractOggVorbisMetadata(file: File): Array<Any?> = extractOggVorbisMetadata(file, true)
 
     fun extractOggVorbisMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(11)
+        val tags = arrayOfNulls<Any>(12)
         try {
             val fis = FileInputStream(file)
             val bos = ByteArrayOutputStream()
             val header = ByteArray(27)
             var totalRead = 0
 
+            var serial: Int? = null
             while (totalRead < 1500000 && fis.read(header) == 27) {
                 if (header[0] != 'O'.code.toByte() || header[1] != 'g'.code.toByte() || header[2] != 'g'.code.toByte() || header[3] != 'S'.code.toByte()) break
+                if (serial == null) {
+                    serial = (header[14].toInt() and 0xFF) or ((header[15].toInt() and 0xFF) shl 8) or
+                        ((header[16].toInt() and 0xFF) shl 16) or ((header[17].toInt() and 0xFF) shl 24)
+                }
 
                 val pageSegments = header[26].toInt() and 0xFF
                 val segmentTable = ByteArray(pageSegments)
@@ -1589,6 +1613,13 @@ class AudioPlayerManager private constructor() {
                 if (isActuallyOpus) {
                     return extractOpusMetadata(file, includeArt)
                 }
+            }
+
+            // [11]: the length (ms), from the last page
+            val rate = AudioLength.vorbisRate(buffer, 0)
+            if (rate > 0) {
+                val granule = AudioLength.lastGranule(file, serial)
+                if (granule >= 0) tags[11] = AudioLength.vorbisMs(granule, rate)
             }
 
             val magic = byteArrayOf(0x03, 'v'.code.toByte(), 'o'.code.toByte(), 'r'.code.toByte(), 'b'.code.toByte(), 'i'.code.toByte(), 's'.code.toByte())
@@ -1703,7 +1734,7 @@ class AudioPlayerManager private constructor() {
     fun extractFlacMetadata(file: File): Array<Any?> = extractFlacMetadata(file, true)
 
     fun extractFlacMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(11)
+        val tags = arrayOfNulls<Any>(12)
         try {
             val raf = RandomAccessFile(file, "r")
             val header = ByteArray(4)
@@ -1721,7 +1752,14 @@ class AudioPlayerManager private constructor() {
                 val blockType = blockHeader and 0x7F
                 val length = (raf.readUnsignedByte() shl 16) or (raf.readUnsignedByte() shl 8) or raf.readUnsignedByte()
 
-                if (blockType == 4) {
+                if (blockType == 0) {
+                    // STREAMINFO (34 bytes): [11] = the length (ms). A bad block length does not get a large buffer.
+                    val info = ByteArray(minOf(length, 34))
+                    raf.readFully(info)
+                    raf.skipBytes(length - info.size)
+                    val ms = AudioLength.flacStreamInfoMs(info)
+                    if (ms > 0) tags[11] = ms
+                } else if (blockType == 4) {
                     val commentData = ByteArray(length)
                     raf.readFully(commentData)
                     try {
@@ -1802,7 +1840,7 @@ class AudioPlayerManager private constructor() {
     fun extractAlacMetadata(file: File): Array<Any?> = extractAlacMetadata(file, true)
 
     fun extractAlacMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(11)
+        val tags = arrayOfNulls<Any>(12)
         try {
             val raf = RandomAccessFile(file, "r")
             val fileSize = raf.length()
@@ -1822,6 +1860,14 @@ class AudioPlayerManager private constructor() {
                     if (type == "meta") pos += 4
                     pos += 8
                     continue
+                }
+
+                if (type == "mvhd" && size >= 28) {
+                    // [11]: the length (ms) = duration / timescale
+                    val box = ByteArray(minOf(size - 8, 32))
+                    raf.readFully(box)
+                    val ms = AudioLength.mvhdMs(box)
+                    if (ms > 0) tags[11] = ms
                 }
 
                 if (type == "\u00A9nam" || type == "\u00A9ART" || type == "\u00A9alb" ||
@@ -2055,12 +2101,12 @@ class AudioPlayerManager private constructor() {
 
             val isShuffle = Prefs.SHUFFLE.get(main.prefs)
             val repeatPref = Prefs.REPEAT_MODE.get(main.prefs)
+            isGaplessQueueActive = !isShuffle && shouldUseGaplessQueue(main.currentPlaylist)
             if (!isUsingLegacyPlayer && exoPlayer != null) {
                 exoPlayer?.shuffleModeEnabled = isShuffle
                 setRepeatMode(repeatPref)
             }
 
-            isGaplessQueueActive = !isShuffle && shouldUseGaplessQueue(main.currentPlaylist)
             if (isGaplessQueueActive) {
                 val mediaItems = ArrayList<MediaItem>()
                 for (f in main.currentPlaylist) {
@@ -2074,12 +2120,7 @@ class AudioPlayerManager private constructor() {
                     exo.stop()
                     exo.setMediaItems(mediaItems, main.currentIndex, savedPos)
                     exo.shuffleModeEnabled = false
-                    val exoRepeatMode = when (repeatPref) {
-                        1 -> Player.REPEAT_MODE_ONE
-                        2 -> Player.REPEAT_MODE_ALL
-                        else -> Player.REPEAT_MODE_OFF
-                    }
-                    exo.repeatMode = exoRepeatMode
+                    exo.repeatMode = exoRepeatMode(repeatPref, gapless = true)
                     exo.setPlaybackParameters(PlaybackParameters(currentSpeed, 1.0f))
                     exo.playWhenReady = false
                     exo.prepare()
@@ -2118,6 +2159,17 @@ class AudioPlayerManager private constructor() {
          */
         internal fun shouldWriteQueue(stamp: List<Int>, saved: List<Int>?, incomplete: List<Int>?): Boolean =
             stamp != saved && stamp != incomplete
+
+        /**
+         * ExoPlayer's repeat mode for the Repeat setting [pref] (0 Off, 1 One, 2 All). [gapless]: ExoPlayer holds the
+         * whole play queue. Otherwise ExoPlayer holds only the current track, and Repeat All must let the track end
+         * (STATE_ENDED), so that handleTrackCompletion starts the next track; REPEAT_MODE_ALL would repeat the one track.
+         */
+        internal fun exoRepeatMode(pref: Int, gapless: Boolean): Int = when (pref) {
+            1 -> Player.REPEAT_MODE_ONE
+            2 -> if (gapless) Player.REPEAT_MODE_ALL else Player.REPEAT_MODE_OFF
+            else -> Player.REPEAT_MODE_OFF
+        }
     }
 }
 
