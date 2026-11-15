@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-11-13T23:02:32Z",
+  "generated_at": "2026-11-15T20:20:36Z",
   "source_repo": "ClassyPlayer/Classy",
   "source_fallback_repo": "",
   "mirror_repo": "y1-community/classy-mirror",
@@ -67,6 +67,225 @@
     }
   ],
   "releases": [
+    {
+      "tag": "20261115-beta",
+      "title": "Portable Flashing Package: Classy 20261115 (beta)",
+      "source_title": "Classy 20261115 (beta)",
+      "source_url": "https://github.com/ClassyPlayer/Classy/releases/tag/20261115-beta",
+      "source_fallback_url": "",
+      "published_at": "2026-11-15T18:03:51Z",
+      "prerelease": true,
+      "source_notes": "> [!WARNING]\n> **This is a beta.** It may have bugs that are not in the stable release. Players get it in **Settings \u2192 General \u2192 System Update \u2192 Update Channel \u2192 Beta**.\n\n### Classy Release\n\nAutomated build with full support for **Innioasis Y1** (Type A & Type B) and **Innioasis Y2**.\n\n#### \ud83d\udce6 Release Assets\n\n| File | Target Device | Notes |\n| :--- | :--- | :--- |\n| **`Classy-20261115-beta.apk`** | All Devices (Y1 / Y2) | Standalone launcher APK (sideload or install) |\n| **`update.json`** | All Devices | OTA update metadata for in-app updater |\n| **`rom_y2.zip`** | **Innioasis Y2** (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| **`rom_y1_type_a.zip`** | **Innioasis Y1** (Type A) | Flashable ROM for Y1 players with original firmware **2.0.0 or higher** |\n| **`rom_y1_type_b.zip`** | **Innioasis Y1** (Type B) | Flashable ROM for Y1 players with original firmware **below 2.0.0** |\n| **`SHA256SUMS.txt`** | All Files | SHA-256 integrity checksums |\n\n#### \u26a1 Flashing Instructions (SP Flash Tool)\n1. Extract the corresponding zip file for your device.\n2. Launch `flash_tool.exe` (or Linux `flash_tool`).\n3. Load the scatter file (`MT6582_Android_scatter.txt` for Y2, `MT6572_Android_scatter.txt` for Y1).\n4. Select **Firmware Upgrade** or **Download Only**.\n5. Power off the device completely, click **Download**, and connect the USB cable.\n\n---\n\n\n## What's Changed\n* fix(podcasts): make Stream (Play) work over HTTPS on Android 4.4, and show why a stream fails by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/102\n* fix(update): do not offer a release with older code than the installed build by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/104\n* docs: shorten the README and add Files and limits to the website by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/105\n* fix(audio): mix FLAC files with Mono Audio, and play a Music Quiz clip with ExoPlayer when MediaPlayer cannot by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/103\n* fix(audio): keep ExoPlayer's buffer in one block that the player keeps, so that FLAC tracks do not stop at 0:00 on Android 4.4 by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/109\n\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261113-beta...20261115-beta",
+      "assets": [
+        {
+          "name": "rom_y1_type_a-windows.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "windows",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 757128613,
+          "sha256": "e077b9da41c4badab2248a1372f5ff6f10e7703025f52b1c462a4d973f9403c2",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-windows.zip"
+        },
+        {
+          "name": "rom_y1_type_a-windows-legacy.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "windows-legacy",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 518889830,
+          "sha256": "c0d9d3a787bcba269f71c7dea026d17311ffeaaf7a2469adbcd37e92548948fa",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_a-linux.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "linux",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 804449937,
+          "sha256": "55c75928c35c8c6b0e2fa56dec9a6908fe7373d30374902f163cd4064f7eb24a",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-linux.zip"
+        },
+        {
+          "name": "rom_y1_type_a-linux-arm64.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "linux-arm64",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 629354171,
+          "sha256": "019d5a4978624e5ef006883f7df919105fd5d280901a46d42eae15a82a4513b3",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y1_type_a-linux-legacy.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "linux-legacy",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 517304111,
+          "sha256": "978b9338872817bb3ae5b1374bcb5ad4d4221502ebc52877f0ed96479d1cf494",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_a-macos.zip",
+          "source_asset": "rom_y1_type_a.zip",
+          "platform": "macos",
+          "model": "Y1",
+          "type": "Type A",
+          "size": 563762587,
+          "sha256": "9ce5259354f63aae7e0cec92ecb408e24b6d4a4ef38ced33750298d06da791ad",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_a-macos.zip"
+        },
+        {
+          "name": "rom_y1_type_b-windows.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "windows",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 750730234,
+          "sha256": "25e21ded41673a66fc2b62248c577d25883e408e4d3ff58facb19a6e81f07e15",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-windows.zip"
+        },
+        {
+          "name": "rom_y1_type_b-windows-legacy.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "windows-legacy",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 512491451,
+          "sha256": "7b0e7d028bb827787e6976d149cf450c535f2d0c09c3e9be4958f2a2f46a0952",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_b-linux.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "linux",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 798051558,
+          "sha256": "f08ccfe72ebaa88085f4bd0c41d139e7a2e9c89342504b133937bde8d471d56b",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-linux.zip"
+        },
+        {
+          "name": "rom_y1_type_b-linux-arm64.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "linux-arm64",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 622955792,
+          "sha256": "b535d6187080967c06ed82766f2007449ca16d17dde99c6807ef899aa12070d4",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y1_type_b-linux-legacy.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "linux-legacy",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 510905732,
+          "sha256": "5e8977c8b841fc2e872765efb8e2aac9d4433a00325c23482f38eed02d3c549c",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y1_type_b-macos.zip",
+          "source_asset": "rom_y1_type_b.zip",
+          "platform": "macos",
+          "model": "Y1",
+          "type": "Type B",
+          "size": 557364209,
+          "sha256": "dbda448c54d5cc1263d8d379e3d4619588bf2ac0e0f670a4aeb6013ca1c441c7",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y1_type_b-macos.zip"
+        },
+        {
+          "name": "rom_y2-windows.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "windows",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 721708174,
+          "sha256": "f15b7da0924800029832161082f933bc2969e31cfb596710ec37947bcfe5f707",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y2-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y2-windows.zip"
+        },
+        {
+          "name": "rom_y2-windows-legacy.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "windows-legacy",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 483469369,
+          "sha256": "e383ca0a14b2108d2a4fb65ebae23ceb7939d4b6cba511879ebb5d790cd22474",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y2-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y2-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y2-linux.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 778537778,
+          "sha256": "2aabe8f10430e10adbb52a3b482ed9f39ad77d3f86d0ef7314b28c0f8ffa6649",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y2-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y2-linux.zip"
+        },
+        {
+          "name": "rom_y2-linux-arm64.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux-arm64",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 603442012,
+          "sha256": "fd26462a8fa8ef1e79c20e3eeec71669ae6c3eed2b457ff2810b467a5e14ded0",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y2-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y2-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y2-linux-legacy.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux-legacy",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 481883650,
+          "sha256": "b70b4896a0857991b3942585e7caee0933381f59915750ab24b054fc7bb77ad6",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y2-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y2-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y2-macos.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "macos",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 530145781,
+          "sha256": "86989f23f388b73ec2292014ead15bdbf9feded2fe7012c7ad40fcde840b9d09",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/rom_y2-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261115-beta/rom_y2-macos.zip"
+        }
+      ],
+      "original_assets": [
+        "Classy-20261115-beta.apk",
+        "rom_y1_type_a.zip",
+        "rom_y1_type_b.zip",
+        "rom_y2.zip",
+        "SHA256SUMS.txt",
+        "update.json"
+      ],
+      "stats_url": "https://github.com/y1-community/classy-mirror/releases/download/20261115-beta/stats.txt"
+    },
     {
       "tag": "20261113-beta",
       "title": "Portable Flashing Package: Classy 20261113 (beta)",
