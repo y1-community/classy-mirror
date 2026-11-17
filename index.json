@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-11-16T22:24:15Z",
+  "generated_at": "2026-11-17T22:05:18Z",
   "source_repo": "ClassyPlayer/Classy",
   "source_fallback_repo": "",
   "mirror_repo": "y1-community/classy-mirror",
@@ -67,6 +67,91 @@
     }
   ],
   "releases": [
+    {
+      "tag": "20261117",
+      "title": "Portable Flashing Package: Classy 20261117",
+      "source_title": "Classy 20261117",
+      "source_url": "https://github.com/ClassyPlayer/Classy/releases/tag/20261117",
+      "source_fallback_url": "",
+      "published_at": "2026-11-17T19:17:15Z",
+      "prerelease": false,
+      "source_notes": "#### Release assets\n\n| File | Target device | Notes |\n| :--- | :--- | :--- |\n| `Classy-20261117.apk` | Innioasis Y2 | Standalone launcher APK (sideload or install) |\n| `update.json` | Innioasis Y2 | OTA update metadata for in-app updater |\n| `rom_y2.zip` | Innioasis Y2 (MT6582) | Complete flashable ROM with dual-storage, watchdog & clickwheel keylayout |\n| `SHA256SUMS.txt` | All files | SHA-256 integrity checksums |\n\nY1 firmware is not in this release. Y1 builds are in the Y1 experimental pre-releases.\n\n\n## What's Changed\n* feat(playlists): show playlist songs with their cover, title and artist by @andsuor in https://github.com/ClassyPlayer/Classy/pull/84\n* fix(podcasts): play or open the chosen episode, not the last Music list by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/89\n* fix(library): skip hidden files and folders in the library scan, such as the macOS ._ files by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/90\n* fix(video): keep the screen on during a video, and fix the length and the diamond of the scrub bar by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/91\n* fix(player): make Repeat All play the whole list, not only the current song by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/88\n* feat(library): list each artist of a multi-artist tag on its own by @andsuor in https://github.com/ClassyPlayer/Classy/pull/85\n* docs(install): keep the file name of the release ROM and clear the Updater CE cache for a local install by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/92\n* feat(audio): add Settings \u2192 Playback \u2192 Mono Audio, which mixes left and right on both channels for one earbud by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/93\n* feat(playlists): show each song's length at the right of a playlist row by @andsuor in https://github.com/ClassyPlayer/Classy/pull/86\n* feat(playlists): keep playlists in Playlists on the microSD card so they can be copied from a computer by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/97\n* fix(podcasts): list the downloaded episodes of a channel when its feed does not load by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/96\n* fix(quiz): use FLAC songs in Music Quiz, and do not ask again a song whose clip does not play by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/95\n* feat(update): add a beta update channel by @JonaszPotoniec in https://github.com/ClassyPlayer/Classy/pull/100\n* fix(podcasts): make Stream (Play) work over HTTPS on Android 4.4, and show why a stream fails by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/102\n* fix(update): do not offer a release with older code than the installed build by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/104\n* docs: shorten the README and add Files and limits to the website by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/105\n* fix(audio): mix FLAC files with Mono Audio, and play a Music Quiz clip with ExoPlayer when MediaPlayer cannot by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/103\n* fix(audio): keep ExoPlayer's buffer in one block that the player keeps, so that FLAC tracks do not stop at 0:00 on Android 4.4 by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/109\n* refactor(audio): play all music with ExoPlayer, and remove the MediaPlayer path of FLAC files and Music Quiz clips by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/110\n* docs(releasing): add the release cycle, the checks before a promotion and the gh commands by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/112\n* ci(release): publish no Y1 ROMs until main supports the Y1, and use the release-notes layout in the release template by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/113\n* feat(controls): add Settings \u2192 Controls \u2192 Letter Jump and Letter Jump Sensitivity, to turn off or tune the iPod letter jump by @ferrolho in https://github.com/ClassyPlayer/Classy/pull/115\n\n## New Contributors\n* @andsuor made their first contribution in https://github.com/ClassyPlayer/Classy/pull/84\n\n**Full Changelog**: https://github.com/ClassyPlayer/Classy/compare/20261112...20261117",
+      "assets": [
+        {
+          "name": "rom_y2-windows.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "windows",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 722169096,
+          "sha256": "c8650efe5ddf64bee2cdad762aa3710c1c2ea30d61fc3ec2de92e4ebeef927da",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/rom_y2-windows.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261117/rom_y2-windows.zip"
+        },
+        {
+          "name": "rom_y2-windows-legacy.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "windows-legacy",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 483930291,
+          "sha256": "ab7e65978420cd7b3d77bacf3386a83ca909ec5384ad3ddd6498409960b0a86e",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/rom_y2-windows-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261117/rom_y2-windows-legacy.zip"
+        },
+        {
+          "name": "rom_y2-linux.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 778998700,
+          "sha256": "50ba792b46fd3f0bda8e7566cfbeeb333c06797409ef9c6c8c32ac143ecae84c",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/rom_y2-linux.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261117/rom_y2-linux.zip"
+        },
+        {
+          "name": "rom_y2-linux-arm64.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux-arm64",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 603902934,
+          "sha256": "308b577b5aa85f87caf1ce3f0bb95a2bddaa65550e83bea219e4c6b80f753abf",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/rom_y2-linux-arm64.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261117/rom_y2-linux-arm64.zip"
+        },
+        {
+          "name": "rom_y2-linux-legacy.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "linux-legacy",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 482344572,
+          "sha256": "ad5079878e9377a98f1b2257a278cdf007972d6e6233cbb57def3e74f655af24",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/rom_y2-linux-legacy.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261117/rom_y2-linux-legacy.zip"
+        },
+        {
+          "name": "rom_y2-macos.zip",
+          "source_asset": "rom_y2.zip",
+          "platform": "macos",
+          "model": "Y2",
+          "type": "Stock",
+          "size": 530606708,
+          "sha256": "7af21fce7de0a7eb6a390b07e6954babba6048e304945ed3dae2422b3e88bf80",
+          "url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/rom_y2-macos.zip",
+          "fallback_url": "https://github.com/ryan-specter/classy-mirror/releases/download/20261117/rom_y2-macos.zip"
+        }
+      ],
+      "original_assets": [
+        "Classy-20261117.apk",
+        "rom_y2.zip",
+        "SHA256SUMS.txt",
+        "update.json"
+      ],
+      "stats_url": "https://github.com/y1-community/classy-mirror/releases/download/20261117/stats.txt"
+    },
     {
       "tag": "20261116-beta.2",
       "title": "Portable Flashing Package: Classy 20261116 (beta 2)",
