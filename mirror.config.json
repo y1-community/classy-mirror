@@ -4,6 +4,8 @@
   "branch": "main",
   "updater_repo": "y1-community/updater-ce-neo",
   "post_install": [],
+  "post_install2": [],
+  "icon": "https://github.com/ClassyPlayer/Classy/raw/main/docs/icons/icon.png",
   "title_prefix": "Portable Flashing Package: ",
   "copy_original_assets": true,
   "source_readme": {
@@ -20,8 +22,8 @@
   },
   "defaults": {
     "software_name": "Classy",
-    "target_model": "Y2",
-    "target_type": "Stock",
+    "target_model": "Y1",
+    "target_type": "Type A",
     "description": ""
   },
   "rules": [
@@ -45,7 +47,7 @@
     },
     {
       "match_asset": "(?i)type[-_ ]?b",
-      "target_model": "Y2",
+      "target_model": "Y1",
       "target_type": "Type B"
     },
     {
