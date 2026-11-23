@@ -420,6 +420,39 @@ class AudioPlayerManager private constructor() {
         exo.prepare()
     }
 
+    /**
+     * Adds [files] to the end of the playing queue; with nothing playing (or only a podcast stream, which is a queue
+     * of its own), starts them. Returns true when it started them.
+     */
+    fun enqueue(files: List<File>): Boolean {
+        val main = MainActivity.instance ?: return false
+        if (files.isEmpty()) return false
+        if (queueIsEmpty(main.currentPlaylist, main.currentIndex)) {
+            playTrackList(files, 0)
+            return true
+        }
+        main.originalPlaylist.addAll(files)
+        main.currentPlaylist.addAll(files)
+        if (isGaplessQueueActive && shouldUseGaplessQueue(main.currentPlaylist)) {
+            exoPlayer?.addMediaItems(files.map { MediaItem.fromUri(Uri.fromFile(it)) })
+        } else {
+            // The longer queue is not for gapless play (an audiobook, too many tracks): from now on ExoPlayer
+            // holds the playing track only, and Repeat All is ours
+            if (isGaplessQueueActive) leaveGaplessQueue(main.currentIndex)
+            setRepeatMode(Prefs.REPEAT_MODE.get(main.prefs))
+        }
+        main.updatePlayerUI() // the "3 of 10" of Now Playing
+        return false
+    }
+
+    /** ExoPlayer keeps only the playing track [index]: the position and the pause state do not change. */
+    private fun leaveGaplessQueue(index: Int) {
+        val exo = exoPlayer ?: return
+        isGaplessQueueActive = false
+        if (index < exo.mediaItemCount - 1) exo.removeMediaItems(index + 1, exo.mediaItemCount)
+        if (index > 0) exo.removeMediaItems(0, index)
+    }
+
     internal fun shouldUseGaplessQueue(list: List<File>): Boolean {
         val main = MainActivity.instance
         if (main?.isAudiobookLibraryMode == true) return false
@@ -1306,7 +1339,7 @@ class AudioPlayerManager private constructor() {
     fun extractOpusMetadata(file: File): Array<Any?> = extractOpusMetadata(file, true)
 
     fun extractOpusMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(12)
+        val tags = arrayOfNulls<Any>(13)
         try {
             val fis = FileInputStream(file)
             val bos = ByteArrayOutputStream()
@@ -1408,6 +1441,8 @@ class AudioPlayerManager private constructor() {
                         tags[9] = comment.substring(comment.indexOf("=") + 1)
                     } else if (upper.startsWith("COMPILATION=")) {
                         tags[10] = comment.substring(comment.indexOf("=") + 1)
+                    } else if (upper.startsWith("MOOD=") || upper.startsWith("AB:MOOD=")) {
+                        appendMood(tags, comment)
                     } else if (includeArt && upper.startsWith("METADATA_BLOCK_PICTURE=")) {
                         try {
                             val base64Data = comment.substring(23).replace("\\s".toRegex(), "")
@@ -1450,7 +1485,7 @@ class AudioPlayerManager private constructor() {
     fun extractOggVorbisMetadata(file: File): Array<Any?> = extractOggVorbisMetadata(file, true)
 
     fun extractOggVorbisMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(12)
+        val tags = arrayOfNulls<Any>(13)
         try {
             val fis = FileInputStream(file)
             val bos = ByteArrayOutputStream()
@@ -1567,6 +1602,8 @@ class AudioPlayerManager private constructor() {
                         tags[9] = comment.substring(comment.indexOf("=") + 1)
                     } else if (upper.startsWith("COMPILATION=")) {
                         tags[10] = comment.substring(comment.indexOf("=") + 1)
+                    } else if (upper.startsWith("MOOD=") || upper.startsWith("AB:MOOD=")) {
+                        appendMood(tags, comment)
                     } else if (includeArt && upper.startsWith("METADATA_BLOCK_PICTURE=")) {
                         try {
                             val base64Data = comment.substring(23).replace("\\s".toRegex(), "")
@@ -1614,7 +1651,7 @@ class AudioPlayerManager private constructor() {
     fun extractFlacMetadata(file: File): Array<Any?> = extractFlacMetadata(file, true)
 
     fun extractFlacMetadata(file: File, includeArt: Boolean): Array<Any?> {
-        val tags = arrayOfNulls<Any>(12)
+        val tags = arrayOfNulls<Any>(13)
         try {
             val raf = RandomAccessFile(file, "r")
             val header = ByteArray(4)
@@ -1689,6 +1726,8 @@ class AudioPlayerManager private constructor() {
                                 tags[9] = comment.substring(comment.indexOf("=") + 1)
                             } else if (upper.startsWith("COMPILATION=")) {
                                 tags[10] = comment.substring(comment.indexOf("=") + 1)
+                            } else if (upper.startsWith("MOOD=") || upper.startsWith("AB:MOOD=")) {
+                                appendMood(tags, comment)
                             }
                             i++
                         }
@@ -2167,6 +2206,10 @@ class AudioPlayerManager private constructor() {
          */
         internal fun stopsAfterErrors(errors: Int, queueSize: Int): Boolean = errors >= queueSize
 
+        /** Nothing to add to: no queue, or only a podcast stream (its queue is one file that is not on the card). */
+        internal fun queueIsEmpty(queue: List<File>, index: Int): Boolean =
+            queue.isEmpty() || index !in queue.indices || queue.singleOrNull()?.absolutePath?.startsWith("/PODCAST_STREAM") == true
+
         /** What the player does after an error of the track at [index]: see [afterTrackError]. */
         internal enum class TrackErrorAction { NEXT, STOP_AT_END, STOP_ALL_FAILED }
 
@@ -2210,4 +2253,16 @@ internal fun <T> shuffleWithFirst(list: MutableList<T>, first: T) {
     list.remove(first)
     Collections.shuffle(list)
     list.add(0, first)
+}
+
+/**
+ * Adds the value of the Vorbis comment [comment] ("MOOD=happy" or Picard's "AB:MOOD=Happy") to the moods in tags[12],
+ * several moods joined by "; ". AB:MOOD (AcousticBrainz) lists a negative for each mood it does not find ("Not happy"):
+ * those are left out, they would fill the Mood list with noise.
+ */
+internal fun appendMood(tags: Array<Any?>, comment: String) {
+    val eq = comment.indexOf("=")
+    val mood = comment.substring(eq + 1).trim()
+    if (mood.isEmpty() || (comment.startsWith("AB:", ignoreCase = true) && mood.startsWith("not ", ignoreCase = true))) return
+    tags[12] = ((tags[12] as? String)?.let { "$it; " } ?: "") + mood
 }
