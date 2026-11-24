@@ -16,6 +16,9 @@ enum class RowLook {
     /** Label; the chevron shows on the focused row (Music lists, Playlists). */
     MENU,
 
+    /** An icon ([RowSpec.icon]) and the label (Rescan, a folder of books, the game menu). */
+    ICON,
+
     /** Label and a value on the right (Settings rows; On/Off shows as a switch with Toggle Style = Switch). */
     VALUE,
 
@@ -34,7 +37,7 @@ enum class RowLook {
     /** A view that the screen made itself ([RowSpec.view]); the renderer only places it and sets the actions. */
     CUSTOM,
 
-    /** A section title ("━ Paired Devices ━": small, grey, centred). The wheel skips it. */
+    /** A section title ("━ Paired Devices ━": small, grey, centred; an empty label gives a plain divider). The wheel skips it. */
     HEADER,
 
     /** Grey text, on more lines when it is long (a message, a hint, a progress line). The wheel skips it. */
@@ -54,8 +57,12 @@ class RowSpec(
     val opens: Boolean = false,
     val checked: Boolean = false,
     val glyphs: List<RowGlyphs.Slot> = emptyList(),
-    /** Text colour of a [RowLook.MENU] row; 0 = the theme colour. */
+    /** Text colour of a [RowLook.MENU] row, text and icon colour of a [RowLook.ICON] row; 0 = the theme colour. */
     val color: Int = 0,
+    /** [RowLook.ICON]: the icon on the left ([com.themoon.y1.views.TablerIcons]). */
+    val icon: Array<String>? = null,
+    /** A navigation row at the top ("..", Play All, Slideshow, Back): the list opens at the first row after them. */
+    val lead: Boolean = false,
     val id: Int = View.NO_ID,
     val view: View? = null,
     /** [RowLook.ART]: puts the art into the row's image (at once, or later from a worker thread); null = no image. */
@@ -63,6 +70,8 @@ class RowSpec(
     val key: String = label,
     /** False: the row is grey and the wheel skips it (a setting that cannot be used now). */
     val enabled: Boolean = true,
+    /** [RowLook.INFO]: a progress bar under the text, 0 to 100; null = no bar. */
+    val progress: Int? = null,
     /** True: the click feedback comes after [onClick] (a row that changes the click sound or vibration plays the new one). */
     val feedbackAfter: Boolean = false,
     val onClick: (() -> Unit)? = null,
@@ -71,7 +80,7 @@ class RowSpec(
 
 /** The row that a list selects when it opens going down. Back always selects the row that opened the deeper list. */
 enum class Focus {
-    /** The first row (the iPod rule). */
+    /** The first row (the iPod rule), after the [RowSpec.lead] rows. */
     FIRST,
 
     /** The row that the user last opened in this list ([ListSpec.id]), else the first row (Playlists, C-6). */
@@ -120,22 +129,17 @@ interface RowTexts {
     fun rowText(position: Int): String?
 }
 
-/** The letter box of the letter jump: it shows the letter while the wheel jumps from letter to letter. */
-interface LetterBox {
-    fun show(letter: String)
-    fun hide()
-}
-
 /** The pure rules of the renderer. */
 object ListModel {
 
     /**
      * The row to select when the list opens: the remembered row ([lastKey]) for [Focus.LAST], the [checked] row
      * (index, -1 = none) for [Focus.CHECKED], else the first row that can be selected ([selectable]: not a header
-     * or an info row). -1 = no row.
+     * or an info row) and is not a [lead] row, else the first row that can be selected. -1 = no row.
      */
     fun firstRow(
-        keys: List<String>, focus: Focus, lastKey: String?, checked: Int = -1, selectable: (Int) -> Boolean = { true }
+        keys: List<String>, focus: Focus, lastKey: String?, checked: Int = -1, selectable: (Int) -> Boolean = { true },
+        lead: (Int) -> Boolean = { false }
     ): Int {
         if (focus == Focus.NONE) return -1
         if (focus == Focus.CHECKED && checked in keys.indices && selectable(checked)) return checked
@@ -143,7 +147,7 @@ object ListModel {
             val i = keys.indexOf(lastKey)
             if (i >= 0 && selectable(i)) return i
         }
-        return keys.indices.firstOrNull(selectable) ?: -1
+        return keys.indices.firstOrNull { selectable(it) && !lead(it) } ?: keys.indices.firstOrNull(selectable) ?: -1
     }
 
     /**
@@ -169,8 +173,9 @@ object ListModel {
     fun shownRows(spec: ListSpec): List<RowSpec> =
         if (spec.rows.isEmpty() && spec.empty != null && !spec.isLong) listOf(RowSpec(spec.empty, key = EMPTY_KEY)) else spec.rows
 
-    /** The text of each shown row for the letter jump: the label (none for the empty row). */
-    fun letterTexts(rows: List<RowSpec>): List<String?> = rows.map { if (it.key == EMPTY_KEY) null else it.label }
+    /** The text of each shown row for the letter jump: the label (none for the empty row and the info rows, like a hint). */
+    fun letterTexts(rows: List<RowSpec>): List<String?> =
+        rows.map { if (it.key == EMPTY_KEY || it.look == RowLook.INFO) null else it.label }
 
     const val EMPTY_KEY = "\u0000empty"
 }

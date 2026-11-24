@@ -20,7 +20,7 @@ import com.themoon.y1.managers.MediaLibraryManager
 import com.themoon.y1.models.ArtistNames
 import com.themoon.y1.models.SongItem
 import com.themoon.y1.podcasts.PodcastDownloadManager
-import com.themoon.y1.views.ClassicMenuStyle
+import com.themoon.y1.views.ClassyMetrics
 import com.themoon.y1.views.ListItemViewFactory
 import com.themoon.y1.views.TablerIcons
 import java.io.File
@@ -34,7 +34,12 @@ class SongListAdapter(
     /** Playlist rows: the cover, the title over the artist, and the track length at the right. */
     private val artRows: Boolean = false,
     /** The rows are the episodes of a podcast channel (Podcasts), not songs of the library. */
-    private val isPodcast: Boolean = false
+    private val isPodcast: Boolean = false,
+    /**
+     * A hold on a song row: told the song and its occurrence (how many rows before it have the same file). Null: Add to
+     * Playlist. A playlist removes the song, My Favorites removes the favorite.
+     */
+    private val onHold: ((song: SongItem, occurrence: Int) -> Unit)? = null
 ) : BaseAdapter(), RowTexts {
 
     private val showShuffleRow: Boolean = !isPodcast && determineShuffleRow(items)
@@ -144,9 +149,9 @@ class SongListAdapter(
             convertView.getChildAt(0) is TextView
 
         val btn: View = if (!isSongRowValid || main == null) {
-            main?.createListButtonWithIcon("", displayTitle, customColor)?.apply {
+            main?.let { ListItemViewFactory.createListButtonWithIcon(it, "", displayTitle, customColor) }?.apply {
                 tag = "song_row"
-                val rowHeight = (ClassicMenuStyle.ROW_HEIGHT_DP * main.resources.displayMetrics.density).toInt()
+                val rowHeight = (ClassyMetrics.ROW_HEIGHT * main.resources.displayMetrics.density).toInt()
                 layoutParams = AbsListView.LayoutParams(
                     AbsListView.LayoutParams.MATCH_PARENT,
                     rowHeight
@@ -163,7 +168,7 @@ class SongListAdapter(
             val pos = main.prefs.getInt("book_pos_" + song.file.absolutePath, 0)
             val dur = main.prefs.getInt("book_dur_" + song.file.absolutePath, 0)
             if (pos > 0 && dur > 0) {
-                main.setupAudiobookProgress(btn, pos, dur)
+                ListItemViewFactory.setupAudiobookProgress(btn, pos, dur)
                 hasProgress = true
             }
         }
@@ -183,7 +188,7 @@ class SongListAdapter(
             }
 
             if (pos > 0 && dur > 0) {
-                main.setupAudiobookProgress(btn, pos, dur)
+                ListItemViewFactory.setupAudiobookProgress(btn, pos, dur)
                 hasProgress = true
             }
         }
@@ -191,10 +196,7 @@ class SongListAdapter(
         if (!hasProgress && main != null && btn is LinearLayout) {
             val normalColor = if (customColor != 0) customColor else ThemeManager.getTextColorPrimary()
             ListItemViewFactory.menuRowLook(btn, normalColor) { focused ->
-                if (focused) {
-                    main.virtualListSelectedIndex = position
-                    main.showFastScrollLetter(song.title)
-                }
+                if (focused) main.virtualListSelectedIndex = position
             }
         }
 
@@ -255,15 +257,17 @@ class SongListAdapter(
             main.clickFeedback()
             main.isLongPressConsumed = true
 
-            when (main.currentBrowserMode) {
-                5 -> main.showRemoveFromFavoritesDialog(song.file)
-                7 -> main.showRemoveFromPlaylistDialog(song.file)
-                else -> main.showAddToPlaylistDialog(song.file)
-            }
+            hold(main, song, songPosition)
             true
         }
 
         return btn
+    }
+
+    /** The hold action of the song at [songPosition]: [onHold], else Add to Playlist. */
+    private fun hold(main: MainActivity, song: SongItem, songPosition: Int) {
+        val hold = onHold ?: return main.showAddToPlaylistDialog(song.file)
+        hold(song, occurrenceOf(items, songPosition))
     }
 
     private fun getShuffleRowView(convertView: View?): View {
@@ -348,11 +352,7 @@ class SongListAdapter(
         art.view.setOnLongClickListener {
             main.clickFeedback()
             main.isLongPressConsumed = true
-            when (main.currentBrowserMode) {
-                5 -> main.showRemoveFromFavoritesDialog(song.file)
-                7 -> main.showRemoveFromPlaylistDialog(song.file)
-                else -> main.showAddToPlaylistDialog(song.file)
-            }
+            hold(main, song, songPosition)
             true
         }
         return art.view
@@ -437,4 +437,10 @@ class SongListAdapter(
                 "ARTIST" == type || "ARTIST_ALL_ALBUMS" == type
         }
     }
+}
+
+/** How many songs before [position] in [items] have the same file as the song at [position] (0 for the first). */
+internal fun occurrenceOf(items: List<SongItem>, position: Int): Int {
+    val path = items[position].file.absolutePath
+    return (0 until position).count { items[it].file.absolutePath == path }
 }
