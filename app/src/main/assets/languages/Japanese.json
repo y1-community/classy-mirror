@@ -847,5 +847,10 @@
   "December": "12月",
   "Shuffle Play": "シャッフル再生",
   "Moods": "ムード",
-  "Unknown Mood": "不明なムード"
+  "Unknown Mood": "不明なムード",
+  "Queue": "キュー",
+  "Earlier Tracks": "前のトラック",
+  "Later Tracks": "次のトラック",
+  "Open this address in a browser on your computer or phone.": "パソコンまたはスマートフォンのブラウザでこのアドレスを開いてください。",
+  "Scan the code with a phone, or open the address in a browser.": "スマートフォンでコードを読み取るか、ブラウザでアドレスを開いてください。"
 }
